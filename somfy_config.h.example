@@ -1,0 +1,11 @@
+// the pin which is connected to the RF transmitters data input
+#define TX_PIN 5
+
+// the channel count this virtual remote supports
+// each channel will be a separate cover in Home Assistant
+#define SOMFY_CHANNEL_COUNT 16
+
+// Uncomment and choose a random 24bit (between 0x000000 and 0xFFFFFF) remote id here (eg. with the help of a password generator)
+// This will be the remote id of the first channel, for each following channel the id will be increased by 1
+//#define SOMFY_REMOTE_ID 0x123456
+

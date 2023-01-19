@@ -1,0 +1,99 @@
+substitutions:
+  devicename: somfyesp
+
+esphome:
+  name: $devicename
+  platform: esp8266
+  board: d1_mini
+  libraries:
+    - EEPROM
+    - SPI
+    - SmartRC-CC1101-Driver-Lib@2.5.6
+    - Somfy_Remote_Lib@0.4.1
+  includes:
+    - lib/EEPROMRollingCodeStorage.h
+    - lib/EEPROMRollingCodeStorage.cpp
+    - somfy_config.h
+    - somfy_cover.h
+
+wifi:
+  networks: !secret networks
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    password: !secret device_password
+
+ota:
+  password: !secret device_password
+
+# Enable Home Assistant API
+api:
+  password: !secret device_password
+  encryption:
+    key: !secret api_encryption_key
+
+light:
+  - platform: status_led
+    id: led
+    internal: true
+    name: "Status LED"
+    pin:
+      number: GPIO02
+      inverted: true
+
+sensor:
+  - platform: uptime
+    name: Uptime
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+web_server:
+  port: 80
+  auth:
+    username: $devicename
+    password: !secret device_password
+
+# write emulated EEPROM (rolling code storage) to flash regularly
+# EEPROMRollingCodeStorage had to be modified, not to do this on every new code
+# this reduces flash wearout caused by burst writes (eg. when all shutters go up/down every morning/evening at the same time)
+interval:
+  - interval: 5min
+    then:
+      lambda: |-
+        SomfyESPRemote::TrySaveRollingCodes();
+
+cover:
+  - platform: custom
+    lambda: |-
+      int remoteID = SOMFY_REMOTE_ID; // start ID (increased for every cover)
+      auto somfy_remote = new SomfyESPRemote(TX_PIN);
+      for (int i = 0; i < SOMFY_CHANNEL_COUNT; ++i)
+      {
+        std::string name = std::string("somfy") + std::to_string(i);
+        somfy_remote->add_cover(name, remoteID + i);
+      }      
+      App.register_component(somfy_remote);
+      return somfy_remote->covers;
+
+    covers:
+
+button:
+  ## save rolling codes to flash (EEPROM commit)
+  - platform: template
+    name: "Save Rolling Codes to flash"
+    on_press:
+      - lambda: |-
+          SomfyESPRemote::TrySaveRollingCodes();
+
+  ## dump rolling codes for all channels to log
+  - platform: template
+    name: "Dump Rolling Codes"
+    on_press:
+      - lambda: |-
+          SomfyESPRemote::DumpRollingCodes();
