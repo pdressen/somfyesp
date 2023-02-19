@@ -32,15 +32,15 @@ After testing, its recommended to pack the construction in a fancy housing (see 
 ### Adapting the code
 Some configuration needs to be done before the code can be built and flashed onto the microcontroller.
 Most of the values have descriptive names or else they are described by a comment.
-- adapt the `secrets.yaml` file for WiFi connection and device credentials
-- adapt the `somfy_config.h` file to suit your needs (remote id, number of channels, ...)
+- adapt the `secrets.yaml.example` file and rename it to `secrets.yaml` for WiFi connection and device credentials
+- adapt the `somfy_config.h.example` file and rename it to `somfy_config.h` to suit your needs (remote id, number of channels, ...)
 - compile the project by running `esphome compile somfy.yaml` in the repository root
 - connect the microcontroller via USB and run `esphome run somfy.yaml` to flash it and stream its logs
 
 ## Usage
 After connecting to your WiFi, your Home Assistant instance should automatically detect it as a new device.
-You'll need the encryption key and device password from `secrets.yaml` to connect to it.
-Besides that, the device offers a web-interface at http://<device-ip> protected by username (`somfyesp`)
+You'll need the encryption key from `secrets.yaml` to connect to it.
+Besides that, the device offers a web-interface at http://\<device-ip\> protected by username (`somfyesp`)
 and the password defined in `secrets.yaml`.
 
 By default the device offers 16 individual virtual RTS remotes (channels) with a cover component and a PROG
