@@ -50,6 +50,8 @@ You can program and then name the corresponding entities in Home Assistant to gi
 
 <img height="600px" src="https://user-images.githubusercontent.com/22083742/213583189-c30793d3-8c3b-4415-9a54-3550b2c01e75.jpg"/>
 
+### Update 2025
+I'm using this device since well over two years now controlling 10 Somfy RTS motors without an issue. No problems whatsoever. Never experienced a dropped command or lost rolling codes. Only recently swapped two motors (mechanical defect) and reprogrammed the corresponding channels successfully.
 
 ## Credits
 This project is heavily inspired by this project by [Evgeni Golov](https://github.com/evgeni):\
